@@ -40,15 +40,16 @@ class Heartbeat:
 
         def _do_heartbeat(queue):
             while True:
-                try:
-                    self.bpm = queue.get_nowait()
-                    self.time_step = 60.0/(self.bpm*40)
-                except Empty:
-                    pass
                 for v in range(0,101,5):
+                    while not queue.empty():
+                        self.bpm = queue.get_nowait()
+                        self.time_step = 60.0/(self.bpm*40)
                     set_brightness(v)
                     time.sleep(self.time_step)
                 for v in range(100,0,-5):
+                    while not queue.empty():
+                        self.bpm = queue.get_nowait()
+                        self.time_step = 60.0/(self.bpm*40)
                     set_brightness(v)
                     time.sleep(self.time_step)
 
