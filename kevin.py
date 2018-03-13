@@ -15,10 +15,11 @@ min_hr = 30
 change_time = 3
 effect_time = 5
 recovery_time = 5
-hb = Heartbeat(baseline_hr)
+hb = Heartbeat(175)
+#hb.set_hr()
 
 #variables
-heart_rate = 70 # baseline_hr
+heart_rate = baseline_hr
 qr_codes = []
 target_rates = []
 times_scanned = []
@@ -62,7 +63,6 @@ def get_code_and_time():
 	qr_codes.append(code)
 	print(qr_codes)
 	times_scanned.append(time.time()) #adds time at same index
-	print(times_scanned)
 	    
 def get_target_hr():
     global target_rates
@@ -75,15 +75,15 @@ def get_target_hr():
             target_hr = min(target_rates)
 	else:
             target_hr = max(target_rates)
-
+'''
 def time_elapsed()
-    if time.time()-times_scanned[-1]>5:
+    if time.time()-times_scanned[-1]>10:
         target_hr = baseline_hr
         times_scanned = []
         qr_codes = []
         print(times_scanned)
         print(target_rates)
-    
+'''
 def change_hr():
     global heart_rate
     global target_hr
@@ -97,9 +97,9 @@ while True:
     line=nbsr.readline(0.1)
     if not line:
         print(heart_rate),
-        hb.set_hr(heart_rate)
         sys.stdout.flush()
         change_hr()
+        #hb.set_hr(heart_rate)
     else:
         code = switcher.get(line.strip())
         print(code)
