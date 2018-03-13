@@ -1,7 +1,9 @@
 #run with zbarcam --prescale=640x480 -S*.disable -Sqrcode.enable | python kevin.py
 
-
+from strobeClass import Heartbeat
+    
 import sys
+import time
 
 from nbstreamreader import NonBlockingStreamReader as NBSR
 nbsr = NBSR(sys.stdin)
@@ -13,6 +15,7 @@ min_hr = 30
 change_time = 3
 effect_time = 5
 recovery_time = 5
+hb = Heartbeat(baseline_hr)
 
 #variables
 heart_rate = 70 # baseline_hr
@@ -58,13 +61,14 @@ def get_code_and_time():
     if switcher.has_key(line.strip()):
 	qr_codes.append(code)
 	print(qr_codes)
-	import datetime
-	times_scanned.append(datetime.datetime.now().time()) #adds time at same index
+	times_scanned.append(time.time()) #adds time at same index
 	print(times_scanned)
 	    
 def get_target_hr():
     global target_rates
     global target_hr
+    global times_scanned
+    global qr_codes
     if len(qr_codes) > 0:
 	target_rates = [all_target_hrs[q] for q in qr_codes]
 	if target_rates[-1]<70:
@@ -72,6 +76,14 @@ def get_target_hr():
 	else:
             target_hr = max(target_rates)
 
+def time_elapsed()
+    if time.time()-times_scanned[-1]>5:
+        target_hr = baseline_hr
+        times_scanned = []
+        qr_codes = []
+        print(times_scanned)
+        print(target_rates)
+    
 def change_hr():
     global heart_rate
     global target_hr
@@ -85,6 +97,7 @@ while True:
     line=nbsr.readline(0.1)
     if not line:
         print(heart_rate),
+        hb.set_hr(heart_rate)
         sys.stdout.flush()
         change_hr()
     else:
@@ -93,3 +106,4 @@ while True:
         scanned = True
         get_code_and_time()
         get_target_hr()
+        print(times_scanned)
