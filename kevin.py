@@ -34,7 +34,8 @@ switcher = {
     "QR-Code:ecstacy": 'ecstacy',
     "QR-Code:digitalis": 'digitalis',
     "QR-Code:beta-blocker": 'beta-blocker',
-    "QR-Code:heroin": 'heroin'
+    "QR-Code:heroin": 'heroin',
+    "QR-Code:caffeine": 'caffeine'
 }
 
 all_target_hrs = {
@@ -47,10 +48,13 @@ all_target_hrs = {
     'ecstacy':120,
     'digitalis':50,
     'beta-blocker':60,
-    'heroin':40
+    'heroin':40,
+    'caffeine':70
 }
 
 def get_code_and_time():
+    global qr_codes
+    global times_scanned
     if switcher.has_key(line.strip()):
 	qr_codes.append(code)
 	print(qr_codes)
@@ -59,29 +63,33 @@ def get_code_and_time():
 	print(times_scanned)
 	    
 def get_target_hr():
+    global target_rates
+    global target_hr
     if len(qr_codes) > 0:
 	target_rates = [all_target_hrs[q] for q in qr_codes]
-	print(target_rates)
-	target_hr = max(target_rates)
-	print(target_hr)
+	if target_rates[-1]<70:
+            target_hr = min(target_rates)
+	else:
+            target_hr = max(target_rates)
 
 def change_hr():
-    while heart_rate - target_hr != 0:
+    global heart_rate
+    global target_hr
+    if heart_rate - target_hr != 0:
 	if target_hr > heart_rate:
             heart_rate += 1
         else:
 	    heart_rate -= 1
-		
+
 while True:
     line=nbsr.readline(0.1)
     if not line:
         print(heart_rate),
         sys.stdout.flush()
+        change_hr()
     else:
         code = switcher.get(line.strip())
-        print(heart_rate)
         print(code)
         scanned = True
         get_code_and_time()
         get_target_hr()
-        change_hr()
