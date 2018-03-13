@@ -28,6 +28,13 @@ and pip install max7219 (not sudo, because we're using vitualenv)
 
 ======================================================
 
+
+Getting zbarcam to work
+======================================================
+zbarcam --prescale=640x480
+otherwise too slow
+
+
 beats_per_minute
 
 Using RPi.GPIO

@@ -1,8 +1,7 @@
 # python barcode processing
 # run wuth zbarcode, as follows:
 
-#   zbarcam -S*.disable -Sqrcode.enable | python barcode.py
-
+# zbarcam -S*.disable -Sqrcode.enable | python barcode.py
 
 
 
@@ -13,13 +12,13 @@ nbsr = NBSR(sys.stdin)
 
 # functions to handle each case
 def altitude():
-    print "altitude"
+    print ("altitude")
 
 def attraction():
-    print "atraction"
+    print ("attraction")
 
 def unknownQR():
-    print "oops"
+    print ("oops")
 
 switcher = {
     "QR-Code:altitude": altitude,
@@ -29,7 +28,7 @@ switcher = {
 while True:
     line=nbsr.readline(0.1)
     if not line:
-        print ".",
+        print ("."),
         sys.stdout.flush()
     else:
         switcher.get(line.strip(), unknownQR)()
