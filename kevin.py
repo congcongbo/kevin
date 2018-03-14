@@ -13,10 +13,9 @@ baseline_hr = 70
 max_hr = 220
 min_hr = 30
 change_time = 3
-effect_time = 5
+effect_time = 25
 recovery_time = 5
-hb = Heartbeat(175)
-#hb.set_hr()
+hb = Heartbeat(70)
 
 #variables
 heart_rate = baseline_hr
@@ -43,11 +42,11 @@ switcher = {
 }
 
 all_target_hrs = {
-    'attraction':175,
-    'dinosaur':200,
-    'banana':175,
+    'attraction':160,
+    'dinosaur':220,
+    'banana':180,
     'nicotine':90,
-    'exercise':120,
+    'exercise':140,
     'altitude':150,
     'ecstacy':120,
     'digitalis':50,
@@ -75,15 +74,21 @@ def get_target_hr():
             target_hr = min(target_rates)
 	else:
             target_hr = max(target_rates)
-'''
-def time_elapsed()
-    if time.time()-times_scanned[-1]>10:
-        target_hr = baseline_hr
-        times_scanned = []
-        qr_codes = []
-        print(times_scanned)
-        print(target_rates)
-'''
+
+def decrease_to_baseline():
+    global target_hr
+    global times_scanned
+    global qr_codes
+    global target_rates
+    global effect_time
+    if len(times_scanned) !=0:
+        if time.time()-times_scanned[-1]>effect_time:
+            print('decreasing to baseline')
+            target_hr = baseline_hr
+            times_scanned = []
+            qr_codes = []
+            change_hr()
+
 def change_hr():
     global heart_rate
     global target_hr
@@ -99,7 +104,8 @@ while True:
         print(heart_rate),
         sys.stdout.flush()
         change_hr()
-        #hb.set_hr(heart_rate)
+        hb.set_hr(heart_rate)
+        decrease_to_baseline()
     else:
         code = switcher.get(line.strip())
         print(code)

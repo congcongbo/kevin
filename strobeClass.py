@@ -48,14 +48,14 @@ class Heartbeat:
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
-                        spi_update(bpm)
+                        spi_update(self.bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
                 for v in range(100,0,-5):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
-                        spi_update(bpm)
+                        spi_update(self.bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
 
