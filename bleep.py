@@ -1,3 +1,7 @@
+'''Bleep on GPIO18 (pin 12)
+Outputs a noise using the pwm output
+'''
+
 import pigpio
 import time
 
