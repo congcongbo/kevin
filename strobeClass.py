@@ -19,6 +19,8 @@ import time
 from threading import Thread
 from Queue import Queue, Empty
 
+from sevenseg import spi_update, spi_init
+
 
 class Heartbeat:
 
@@ -35,6 +37,8 @@ class Heartbeat:
 
         self.pi.hardware_PWM(self.pwm_pin, 0, 0)
 
+        spi_init()
+
         def set_brightness(value):
             self.pi.hardware_PWM(self.pwm_pin, 38000, value*10000)
 
@@ -44,12 +48,14 @@ class Heartbeat:
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
+                        spi_update(bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
                 for v in range(100,0,-5):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
+                        spi_update(bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
 
