@@ -29,6 +29,9 @@ class Heartbeat:
         self.pi = pigpio.pi()
 
         self.pwm_pin = 12
+        self.strobe_pin = 21
+        self.pi.set_mode(self.strobe_pin, pigpio.OUTPUT)
+
         self.bpm = default_heartrate
 
         self._q = Queue()
@@ -44,6 +47,7 @@ class Heartbeat:
 
         def _do_heartbeat(queue):
             while True:
+                self.pi.write(self.strobe_pin,1)
                 for v in range(0,101,5):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
@@ -51,6 +55,7 @@ class Heartbeat:
                         spi_update(self.bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
+                self.pi.write(self.strobe_pin,0)
                 for v in range(100,0,-5):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
