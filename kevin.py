@@ -4,6 +4,7 @@ from strobeClass import Heartbeat
     
 import sys
 import time
+from heartLeds import tidyup
 
 from nbstreamreader import NonBlockingStreamReader as NBSR
 nbsr = NBSR(sys.stdin)
@@ -98,18 +99,23 @@ def change_hr():
         else:
 	    heart_rate -= 1
 
-while True:
-    line=nbsr.readline(0.1)
-    if not line:
-        print(heart_rate),
-        sys.stdout.flush()
-        change_hr()
-        hb.set_hr(heart_rate)
-        decrease_to_baseline()
-    else:
-        code = switcher.get(line.strip())
-        print(code)
-        scanned = True
-        get_code_and_time()
-        get_target_hr()
-        print(times_scanned)
+
+try:
+    while True:
+        line=nbsr.readline(0.1)
+        if not line:
+            print(heart_rate),
+            sys.stdout.flush()
+            change_hr()
+    #        hb.set_hr(heart_rate)
+            decrease_to_baseline()
+        else:
+            code = switcher.get(line.strip())
+            print(code)
+            scanned = True
+            get_code_and_time()
+            get_target_hr()
+            print(times_scanned)
+except KeyboardInterrupt:
+    tidyup()
+

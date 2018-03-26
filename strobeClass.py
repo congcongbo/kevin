@@ -13,14 +13,14 @@ when you want to change the heartrate
     hb.set_hr(<new_bpm>)
 """
 
-import pigpio
-import time
+import pigpio, os, time
 
 from threading import Thread
 from Queue import Queue, Empty
 
 from sevenseg import spi_update, spi_init
 
+from heartLeds import set_brightness, init_brightness
 
 class Heartbeat:
 
@@ -28,7 +28,6 @@ class Heartbeat:
 
         self.pi = pigpio.pi()
 
-        self.pwm_pin = 12
         self.strobe_pin = 21
         self.pi.set_mode(self.strobe_pin, pigpio.OUTPUT)
 
@@ -38,25 +37,28 @@ class Heartbeat:
 
         self.time_step = 60.0/(self.bpm*40)
 
-        self.pi.hardware_PWM(self.pwm_pin, 0, 0)
-
+        init_brightness()
         spi_init()
-
-        def set_brightness(value):
-            self.pi.hardware_PWM(self.pwm_pin, 38000, value*10000)
 
         def _do_heartbeat(queue):
             while True:
-                self.pi.write(self.strobe_pin,1)
-                for v in range(0,101,5):
+                os.system('/usr/bin/aplay /home/pi/Development/kevin/lub.wav 2>/dev/null &')
+                for v in range(0,181,15):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
                         spi_update(self.bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
-                self.pi.write(self.strobe_pin,0)
-                for v in range(100,0,-5):
+                os.system('/usr/bin/aplay /home/pi/Development/kevin/dub.wav 2>/dev/null &')
+                for v in range(180,256,15):
+                    while not queue.empty():
+                        self.bpm = queue.get_nowait()
+                        self.time_step = 60.0/(self.bpm*40)
+                        spi_update(self.bpm)
+                    set_brightness(v)
+                    time.sleep(self.time_step)
+                for v in range(255,0,-15):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
                         self.time_step = 60.0/(self.bpm*40)
@@ -71,8 +73,4 @@ class Heartbeat:
 
     def set_hr(self, new_hr):
         self._q.put(new_hr)
-
-    def tidyup(self):
-        self.pi.set_mode(self.pwm_pin, pigpio.OUTPUT)
-        self.pi.write(self.pwm_pin, 1)
 
