@@ -107,7 +107,7 @@ try:
             print(heart_rate),
             sys.stdout.flush()
             change_hr()
-    #        hb.set_hr(heart_rate)
+            hb.set_hr(heart_rate)
             decrease_to_baseline()
         else:
             code = switcher.get(line.strip())
