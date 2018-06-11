@@ -42,7 +42,7 @@ class Heartbeat:
 
         def _do_heartbeat(queue):
             while True:
-                os.system('/usr/bin/aplay /home/pi/Development/kevin/lub.wav 2>/dev/null &')
+                os.system('/usr/bin/aplay /home/pi/kevin/lub.wav 2>/dev/null &')
                 for v in range(0,181,15):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
@@ -50,7 +50,7 @@ class Heartbeat:
                         spi_update(self.bpm)
                     set_brightness(v)
                     time.sleep(self.time_step)
-                os.system('/usr/bin/aplay /home/pi/Development/kevin/dub.wav 2>/dev/null &')
+                os.system('/usr/bin/aplay /home/pi/kevin/dub.wav 2>/dev/null &')
                 for v in range(180,256,15):
                     while not queue.empty():
                         self.bpm = queue.get_nowait()
