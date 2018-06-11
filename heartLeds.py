@@ -1,7 +1,7 @@
 import pigpio
 from time import sleep
 pi = pigpio.pi()
-pin = 18
+pin = 12
 
 def init_brightness():
     pi.set_mode(pin, pigpio.OUTPUT)

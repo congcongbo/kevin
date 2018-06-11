@@ -1,0 +1,4 @@
+cd /home/pi/kevin
+zbarcam --prescale=640x480 -S*.disable -Sqrcode.enable | /usr/bin/python kevin.py
+
+
